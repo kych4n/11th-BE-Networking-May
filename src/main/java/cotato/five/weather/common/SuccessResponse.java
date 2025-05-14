@@ -15,6 +15,10 @@ public enum SuccessResponse {
 
     LOGGED_IN(HttpStatus.OK, "USER-001", "로그인 성공"),
     LOGGED_OUT(HttpStatus.OK, "USER-003", "로그아웃 성공"),
+
+    RETRIEVED_DETAIL_DAILY_WEATHER(HttpStatus.OK, "WEA-001", "날짜별 날씨 상세 조회 성공"),
+    RETRIEVED_HOURLY_WEATHER(HttpStatus.OK, "WEA-002", "시간별 날씨 조회 성공"),
+    RETRIEVED_WEEKLY_WEATHER(HttpStatus.OK, "WEA-003", "5일 주간 예보 조회 성공"),
     ;
 
     private final HttpStatus status;
