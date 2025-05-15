@@ -11,6 +11,7 @@ public enum FailureResponse {
 
     NOT_FOUND_LOCATION(HttpStatus.NOT_FOUND, "LOC-004", "존재하지 않는 위치 등록 정보"),
     NOT_FOUND_PIN(HttpStatus.NOT_FOUND, "LOC-009", "존재하지 않는 핀"),
+    UNAUTHORIZED_LOCATION(HttpStatus.UNAUTHORIZED, "LOC-010", "이용할 수 없는 위치 등록 정보"),
 
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "USER-002", "존재하지 않는 회원"),
     ;
