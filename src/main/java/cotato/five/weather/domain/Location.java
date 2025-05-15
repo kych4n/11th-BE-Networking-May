@@ -1,6 +1,7 @@
 package cotato.five.weather.domain;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -35,11 +36,15 @@ public class Location {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Embedded
+    private Pin pin;
+
     public Location(String name, Double latitude, Double longitude, Member member) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.member = member;
+        this.pin = new Pin();
     }
 
     public void change(String name, Double latitude, Double longitude) {
