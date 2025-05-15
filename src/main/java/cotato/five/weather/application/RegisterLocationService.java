@@ -10,6 +10,7 @@ import cotato.five.weather.exception.NotFoundException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class RegisterLocationService implements RegisterLocationCommand {
     private final LoadMemberPort loadMemberPort;
 
     @Override
+    @Transactional
     public void register(RegisterLocationRequest request, UUID id) {
         registerLocationPort.save(new Location(request.name(), request.latitude(), request.longitude(),
                 loadMemberPort.findById(id).orElseThrow(() -> new NotFoundException(FailureResponse.NOT_FOUND_USER))));
