@@ -11,6 +11,7 @@ import cotato.five.weather.exception.NotFoundException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class LoadLocationListService implements LoadLocationListQuery {
     private final LoadMemberPort loadMemberPort;
 
     @Override
+    @Transactional(readOnly = true)
     public LoadLocationListResponse load(UUID id) {
         Member member = loadMemberPort.findById(id)
                 .orElseThrow(() -> new NotFoundException(FailureResponse.NOT_FOUND_USER));

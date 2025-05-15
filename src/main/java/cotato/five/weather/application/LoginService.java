@@ -9,6 +9,7 @@ import cotato.five.weather.exception.NotFoundException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +17,7 @@ public class LoginService implements LoginCommand {
     private final LoginPort loginPort;
 
     @Override
+    @Transactional
     public UUID login(LoginRequest request) {
         return loginPort.findByUsername(request.username())
                 .map(member -> {

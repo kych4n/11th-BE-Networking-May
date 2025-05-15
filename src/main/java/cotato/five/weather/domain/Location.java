@@ -41,4 +41,10 @@ public class Location {
         this.longitude = longitude;
         this.member = member;
     }
+
+    public void change(String name, Double latitude, Double longitude) {
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }
