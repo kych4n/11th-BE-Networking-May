@@ -1,6 +1,6 @@
-package cotato.five.weather.application.port;
+package cotato.five.weather.application;
 
-import cotato.five.weather.adapter.in.dto.RegisterLocationRequest;
+import cotato.five.weather.adapter.in.dto.request.RegisterLocationRequest;
 import cotato.five.weather.application.port.in.RegisterLocationCommand;
 import cotato.five.weather.application.port.out.LoadMemberPort;
 import cotato.five.weather.application.port.out.RegisterLocationPort;

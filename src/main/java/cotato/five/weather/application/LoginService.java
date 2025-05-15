@@ -1,8 +1,8 @@
-package cotato.five.weather.application.port;
+package cotato.five.weather.application;
 
-import cotato.five.weather.adapter.in.dto.LoginRequest;
+import cotato.five.weather.adapter.in.dto.request.LoginRequest;
 import cotato.five.weather.application.port.in.LoginCommand;
-import cotato.five.weather.application.port.out.LoginRepository;
+import cotato.five.weather.application.port.out.LoginPort;
 import cotato.five.weather.common.FailureResponse;
 import cotato.five.weather.domain.Member;
 import cotato.five.weather.exception.NotFoundException;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class LoginService implements LoginCommand {
-    private final LoginRepository loginRepository;
+    private final LoginPort loginPort;
 
     @Override
     public UUID login(LoginRequest request) {
-        return loginRepository.findByUsername(request.username())
+        return loginPort.findByUsername(request.username())
                 .map(member -> {
                     if (member.getPassword().equals(request.password())) {
                         return member.getId();
@@ -27,7 +27,7 @@ public class LoginService implements LoginCommand {
                 })
                 .orElseGet(() -> {
                     Member newMember = new Member(request.username(), request.password());
-                    loginRepository.save(newMember);
+                    loginPort.save(newMember);
                     return newMember.getId();
                 });
     }

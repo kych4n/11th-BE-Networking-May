@@ -1,6 +1,6 @@
 package cotato.five.weather.adapter.in.web;
 
-import cotato.five.weather.adapter.in.dto.LoginRequest;
+import cotato.five.weather.adapter.in.dto.request.LoginRequest;
 import cotato.five.weather.application.port.in.LoginCommand;
 import cotato.five.weather.common.ApiResponse;
 import cotato.five.weather.common.BaseResponse;
