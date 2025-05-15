@@ -1,4 +1,4 @@
-package cotato.five.weather.adapter.in.dto;
+package cotato.five.weather.adapter.in.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 

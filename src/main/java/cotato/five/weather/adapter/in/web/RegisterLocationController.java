@@ -1,6 +1,6 @@
 package cotato.five.weather.adapter.in.web;
 
-import cotato.five.weather.adapter.in.dto.RegisterLocationRequest;
+import cotato.five.weather.adapter.in.dto.request.RegisterLocationRequest;
 import cotato.five.weather.application.port.in.RegisterLocationCommand;
 import cotato.five.weather.common.ApiResponse;
 import cotato.five.weather.common.BaseResponse;
