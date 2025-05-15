@@ -1,6 +1,6 @@
 package cotato.five.weather.application.port.in;
 
-import cotato.five.weather.adapter.in.dto.LoginRequest;
+import cotato.five.weather.adapter.in.dto.request.LoginRequest;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 
