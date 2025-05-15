@@ -4,10 +4,8 @@ import cotato.five.weather.application.dto.WeatherDailyResponse;
 import cotato.five.weather.application.service.WeatherService;
 import cotato.five.weather.common.ApiResponse;
 import cotato.five.weather.common.BaseResponse;
-import cotato.five.weather.common.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static cotato.five.weather.common.SuccessResponse.RETRIEVED_DETAIL_DAILY_WEATHER;
+import static cotato.five.weather.common.SuccessResponse.RETRIEVED_HOURLY_WEATHER;
 
 @RestController
 @RequestMapping("/weather")
@@ -29,5 +28,12 @@ public class WeatherController {
     ) {
         WeatherDailyResponse data = weatherService.getDailyWeather(latitude, longitude);
         return ApiResponse.success(RETRIEVED_DETAIL_DAILY_WEATHER, data);
+    }
+
+    @GetMapping("/hourly")
+    public ResponseEntity<?> getHourlyWeather(@RequestParam double latitude,
+                                              @RequestParam double longitude) {
+        var data = weatherService.getHourlyWeather(latitude, longitude);
+        return ApiResponse.success(RETRIEVED_HOURLY_WEATHER, data);
     }
 }

@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public record OpenWeatherResponse(
-        Current current
+        Current current,
+        List<Hourly> hourly
 ) {
     public record Current(
             double temp,
@@ -15,6 +16,12 @@ public record OpenWeatherResponse(
             int wind_deg,
             double uvi,
             long sunrise,
+            List<Weather> weather
+    ) {}
+
+    public record Hourly(
+            long dt,
+            double temp,
             List<Weather> weather
     ) {}
 
