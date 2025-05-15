@@ -1,10 +1,10 @@
 package cotato.five.weather.adapter.out.persistence;
 
-import cotato.five.weather.application.dto.AirPollutionResponse;
-import cotato.five.weather.application.dto.OpenWeatherResponse;
-import cotato.five.weather.application.dto.WeatherDailyResponse;
+import cotato.five.weather.application.dto.*;
 import cotato.five.weather.application.port.in.WeatherClient;
 import cotato.five.weather.exception.BadRequestException;
+import cotato.five.weather.exception.CustomException;
+import cotato.five.weather.exception.MethodArgumentNotValidException;
 import cotato.five.weather.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,9 +16,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
-import static cotato.five.weather.common.FailureResponse.EXTERNAL_SERVER_ERROR;
-import static cotato.five.weather.common.FailureResponse.INTERNAL_SEVER_ERROR;
+import static cotato.five.weather.common.FailureResponse.*;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +64,40 @@ public class OpenWeatherClient implements WeatherClient {
                     .uvi(current.uvi())
                     .sunrise(LocalDateTime.ofInstant(Instant.ofEpochSecond(current.sunrise()), ZoneId.of("Asia/Seoul")))
                     .build();
+        } catch (HttpClientErrorException | ResourceAccessException e) {
+            throw new UnauthorizedException(EXTERNAL_SERVER_ERROR); // 외부 서버 오류
+        } catch (Exception e) {
+            throw new BadRequestException(INTERNAL_SEVER_ERROR); // 내부 서버 오류
+        }
+    }
+
+    @Override
+    public WeatherHourlyResponse getHourlyWeather(double lat, double lon) {
+        try {
+            String url = UriComponentsBuilder.fromHttpUrl("https://api.openweathermap.org/data/3.0/onecall")
+                    .queryParam("lat", lat)
+                    .queryParam("lon", lon)
+                    .queryParam("exclude", "current,minutely,daily,alerts")
+                    .queryParam("units", "metric")
+                    .queryParam("appid", API_KEY)
+                    .toUriString();
+
+            OpenWeatherResponse response = restTemplate.getForObject(url, OpenWeatherResponse.class);
+
+//            if (response == null || response.hourly() == null) {
+//                throw new MethodArgumentNotValidException(INVALID_DATA);
+//            }
+
+            List<WeatherHourlyData> hourly = response.hourly().stream()
+                    .limit(24)
+                    .map(hour -> new WeatherHourlyData(
+                            LocalDateTime.ofInstant(Instant.ofEpochSecond(hour.dt()), ZoneId.of("Asia/Seoul")),
+                            hour.weather().get(0).main(),
+                            hour.temp()
+                    )).toList();
+
+            return new WeatherHourlyResponse(hourly);
+
         } catch (HttpClientErrorException | ResourceAccessException e) {
             throw new UnauthorizedException(EXTERNAL_SERVER_ERROR); // 외부 서버 오류
         } catch (Exception e) {
