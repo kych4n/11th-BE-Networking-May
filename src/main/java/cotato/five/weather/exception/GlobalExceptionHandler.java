@@ -19,19 +19,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<BaseResponse<?>> handleMethodArgumentNotValidException(
-            MethodArgumentTypeMismatchException e) {
+            MethodArgumentNotValidException e) {
         return ApiResponse.failure(FailureResponse.INVALID_DATA);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<BaseResponse<?>> handleNotFoundException(
-            MethodArgumentTypeMismatchException e) {
+            NotFoundException e) {
         return ApiResponse.failure(e.getFailureResponse());
     }
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<BaseResponse<?>> handleUnauthorizedException(
-            MethodArgumentTypeMismatchException e) {
+            UnauthorizedException e) {
         return ApiResponse.failure(e.getFailureResponse());
     }
 
