@@ -22,6 +22,7 @@ public record OpenWeatherResponse(
     public record Hourly(
             long dt,
             double temp,
+            int humidity,
             List<Weather> weather
     ) {}
 
