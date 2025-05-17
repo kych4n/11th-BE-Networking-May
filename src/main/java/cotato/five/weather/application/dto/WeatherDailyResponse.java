@@ -12,9 +12,9 @@ public record WeatherDailyResponse(
         double feelsLike,
         int humidity,
         double windSpeed,
-        int windDeg,
-        int pm10,
-        int pm2_5,
-        double uvi,
+        String windDeg,
+        String pm10,
+        String pm2_5,
+        String uvi,
         LocalDateTime sunrise
 ) {}
