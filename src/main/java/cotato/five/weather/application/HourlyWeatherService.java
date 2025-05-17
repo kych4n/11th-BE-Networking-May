@@ -1,6 +1,7 @@
 package cotato.five.weather.application;
 
 import cotato.five.weather.application.dto.OpenWeatherResponse;
+import cotato.five.weather.application.dto.WeatherCodeDescription;
 import cotato.five.weather.application.dto.WeatherHourlyData;
 import cotato.five.weather.application.dto.WeatherHourlyResponse;
 import cotato.five.weather.exception.BadRequestException;
@@ -46,7 +47,7 @@ public class HourlyWeatherService {
                     .limit(24)
                     .map(hour -> new WeatherHourlyData(
                             LocalDateTime.ofInstant(Instant.ofEpochSecond(hour.dt()), ZONE_ID),
-                            hour.weather().get(0).main(),
+                            WeatherCodeDescription.change(hour.weather().get(0).main()),
                             hour.temp()
                     )).toList();
 

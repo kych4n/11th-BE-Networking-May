@@ -1,7 +1,6 @@
 package cotato.five.weather.application;
 
-import cotato.five.weather.application.dto.OpenWeatherResponse;
-import cotato.five.weather.application.dto.WeatherDailyResponse;
+import cotato.five.weather.application.dto.*;
 import cotato.five.weather.exception.BadRequestException;
 import cotato.five.weather.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
@@ -48,14 +47,14 @@ public class CurrentWeatherService {
 
             return WeatherDailyResponse.builder()
                     .temp(current.temp())
-                    .weather(current.weather().get(0).main())
+                    .weather(WeatherCodeDescription.change(current.weather().get(0).main()))
                     .feelsLike(current.feels_like())
                     .humidity(current.humidity())
                     .windSpeed(current.wind_speed())
-                    .windDeg(current.wind_deg())
-                    .pm10((int) components.pm10())
-                    .pm2_5((int) components.pm2_5())
-                    .uvi(current.uvi())
+                    .windDeg(WindDirectionDescription.getWindDirection(current.wind_deg()))
+                    .pm10(Pm10Grade.getPm10Grade(components.pm10()))
+                    .pm2_5(Pm2_5Grade.getPm2_5Grade(components.pm2_5()))
+                    .uvi(UviGrade.getUviGrade(current.uvi()))
                     .sunrise(LocalDateTime.ofInstant(Instant.ofEpochSecond(current.sunrise()), ZONE_ID))
                     .build();
 
