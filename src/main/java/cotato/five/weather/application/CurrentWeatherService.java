@@ -1,8 +1,7 @@
-package cotato.five.weather.adapter.out.persistence;
+package cotato.five.weather.application;
 
 import cotato.five.weather.application.dto.OpenWeatherResponse;
-import cotato.five.weather.application.dto.WeatherHourlyData;
-import cotato.five.weather.application.dto.WeatherHourlyResponse;
+import cotato.five.weather.application.dto.WeatherDailyResponse;
 import cotato.five.weather.exception.BadRequestException;
 import cotato.five.weather.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
@@ -16,41 +15,49 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
 
 import static cotato.five.weather.common.FailureResponse.EXTERNAL_SERVER_ERROR;
 import static cotato.five.weather.common.FailureResponse.INTERNAL_SEVER_ERROR;
 
 @Service
 @RequiredArgsConstructor
-public class HourlyWeatherService {
+public class CurrentWeatherService {
 
     private final RestTemplate restTemplate;
     @Value("${openweather.api.key}")
     private String API_KEY;
     private static final ZoneId ZONE_ID = ZoneId.of("Asia/Seoul");
 
-    public WeatherHourlyResponse getHourlyWeather(double lat, double lon) {
+    private final AirPollutionService airPollutionService;
+
+    public WeatherDailyResponse getDailyWeather(double lat, double lon) {
         try {
-            String url = UriComponentsBuilder.fromHttpUrl("https://api.openweathermap.org/data/3.0/onecall")
+            String url = UriComponentsBuilder
+                    .fromHttpUrl("https://api.openweathermap.org/data/3.0/onecall")
                     .queryParam("lat", lat)
                     .queryParam("lon", lon)
-                    .queryParam("exclude", "current,minutely,daily,alerts")
+                    .queryParam("exclude", "minutely,hourly,daily,alerts")
                     .queryParam("units", "metric")
                     .queryParam("appid", API_KEY)
                     .toUriString();
 
-            OpenWeatherResponse response = restTemplate.getForObject(url, OpenWeatherResponse.class);
+            OpenWeatherResponse res = restTemplate.getForObject(url, OpenWeatherResponse.class);
+            var current = res.current();
 
-            List<WeatherHourlyData> hourly = response.hourly().stream()
-                    .limit(24)
-                    .map(hour -> new WeatherHourlyData(
-                            LocalDateTime.ofInstant(Instant.ofEpochSecond(hour.dt()), ZONE_ID),
-                            hour.weather().get(0).main(),
-                            hour.temp()
-                    )).toList();
+            var components = airPollutionService.getComponents(lat, lon);
 
-            return new WeatherHourlyResponse(hourly);
+            return WeatherDailyResponse.builder()
+                    .temp(current.temp())
+                    .weather(current.weather().get(0).main())
+                    .feelsLike(current.feels_like())
+                    .humidity(current.humidity())
+                    .windSpeed(current.wind_speed())
+                    .windDeg(current.wind_deg())
+                    .pm10((int) components.pm10())
+                    .pm2_5((int) components.pm2_5())
+                    .uvi(current.uvi())
+                    .sunrise(LocalDateTime.ofInstant(Instant.ofEpochSecond(current.sunrise()), ZONE_ID))
+                    .build();
 
         } catch (HttpClientErrorException | ResourceAccessException e) {
             throw new UnauthorizedException(EXTERNAL_SERVER_ERROR);
@@ -59,3 +66,4 @@ public class HourlyWeatherService {
         }
     }
 }
+
