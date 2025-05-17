@@ -1,4 +1,4 @@
-package cotato.five.weather.adapter.out.persistence;
+package cotato.five.weather.application;
 
 import cotato.five.weather.application.dto.AirPollutionResponse;
 import cotato.five.weather.exception.BadRequestException;

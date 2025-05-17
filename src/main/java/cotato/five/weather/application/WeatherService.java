@@ -1,4 +1,4 @@
-package cotato.five.weather.application.service;
+package cotato.five.weather.application;
 
 import cotato.five.weather.application.dto.WeatherDailyResponse;
 import cotato.five.weather.application.dto.WeatherHourlyResponse;
