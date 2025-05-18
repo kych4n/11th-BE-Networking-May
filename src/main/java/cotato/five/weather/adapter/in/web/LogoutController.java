@@ -22,9 +22,10 @@ public class LogoutController {
     private ResponseCookie expireCookie() {
         return ResponseCookie.from("id", "")
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
                 .maxAge(0)
                 .path("/")
+                .sameSite("None")
                 .build();
     }
 }
