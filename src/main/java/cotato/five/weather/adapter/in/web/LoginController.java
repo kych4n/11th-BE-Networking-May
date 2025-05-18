@@ -30,10 +30,10 @@ public class LoginController {
     private ResponseCookie generateCookie(String id) {
         return ResponseCookie.from("id", id)
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
                 .maxAge(3600)
                 .path("/")
-                .sameSite("Strict")
+                .sameSite("None")
                 .build();
     }
 }
