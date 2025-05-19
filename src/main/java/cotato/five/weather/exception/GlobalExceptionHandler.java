@@ -5,6 +5,7 @@ import cotato.five.weather.common.BaseResponse;
 import cotato.five.weather.common.FailureResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -33,6 +34,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseResponse<?>> handleUnauthorizedException(
             UnauthorizedException e) {
         return ApiResponse.failure(e.getFailureResponse());
+    }
+
+    @ExceptionHandler(MissingRequestCookieException.class)
+    public ResponseEntity<BaseResponse<?>> handleMissingRequestCookieException(
+            MissingRequestCookieException e) {
+        return ApiResponse.failure(FailureResponse.NOT_FOUND_USER);
     }
 
     @ExceptionHandler(CustomException.class)
