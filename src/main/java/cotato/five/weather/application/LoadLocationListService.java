@@ -33,6 +33,7 @@ public class LoadLocationListService implements LoadLocationListQuery {
                                 .thenComparing(location -> location.getPin().getPinnedAt(),
                                         Comparator.nullsLast(Comparator.reverseOrder()))
                 )
-                .map(location -> new LoadLocationResponse(location.getId(), location.getName())).toList());
+                .map(location -> new LoadLocationResponse(location.getId(), location.getName(), location.getLatitude(),
+                        location.getLongitude(), location.getPin().getIsPinned())).toList());
     }
 }
