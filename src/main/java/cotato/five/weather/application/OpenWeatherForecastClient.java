@@ -1,7 +1,6 @@
 package cotato.five.weather.application;
 
 import cotato.five.weather.application.dto.ForecastResponse;
-import cotato.five.weather.application.dto.WeatherCodeDescription;
 import cotato.five.weather.application.dto.WeatherDailyForecast;
 import cotato.five.weather.exception.BadRequestException;
 import cotato.five.weather.exception.UnauthorizedException;
@@ -130,7 +129,7 @@ public class OpenWeatherForecastClient {
                 mostCommonWeather = entry.getKey();
             }
         }
-        mostCommonWeather = WeatherCodeDescription.change(mostCommonWeather);
+        mostCommonWeather = mostCommonWeather;
 
         return new WeatherDailyForecast.HalfDayData(avgTemp, avgHumidity, mostCommonWeather);
     }

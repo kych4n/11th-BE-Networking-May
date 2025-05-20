@@ -47,7 +47,7 @@ public class CurrentWeatherService {
 
             return WeatherDailyResponse.builder()
                     .temp(current.temp())
-                    .weather(WeatherCodeDescription.change(current.weather().get(0).main()))
+                    .weather(current.weather().get(0).main())
                     .feelsLike(current.feels_like())
                     .humidity(current.humidity())
                     .windSpeed(current.wind_speed())
