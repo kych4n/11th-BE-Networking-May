@@ -1,7 +1,6 @@
 package cotato.five.weather.application;
 
 import cotato.five.weather.application.dto.OpenWeatherResponse;
-import cotato.five.weather.application.dto.WeatherCodeDescription;
 import cotato.five.weather.application.dto.WeatherDailyForecast;
 import cotato.five.weather.application.dto.WeatherWeeklyResponse;
 import cotato.five.weather.exception.BadRequestException;
@@ -59,7 +58,7 @@ public class WeeklyWeatherService {
                 WeatherDailyForecast.HalfDayData morning = new WeatherDailyForecast.HalfDayData(
                         current.temp(),
                         current.humidity(),
-                        WeatherCodeDescription.change(current.weather().get(0).main())
+                        current.weather().get(0).main()
                 );
 
                 List<WeatherDailyForecast> forecasts = forecastClient.getForecasts(lat, lon, today);
