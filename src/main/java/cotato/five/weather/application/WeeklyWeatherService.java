@@ -35,49 +35,42 @@ public class WeeklyWeatherService {
 
     public WeatherWeeklyResponse getWeeklyWeather(double lat, double lon) {
         LocalDate today = LocalDate.now(ZONE_ID);
-        LocalTime now = LocalTime.now(ZONE_ID);
 
         List<WeatherDailyForecast> weekly = new ArrayList<>();
 
-        if (now.isBefore(LocalTime.NOON)) {
+        try {
+            String url = UriComponentsBuilder.fromHttpUrl("https://api.openweathermap.org/data/3.0/onecall")
+                    .queryParam("lat", lat)
+                    .queryParam("lon", lon)
+                    .queryParam("exclude", "minutely,hourly,daily,alerts")
+                    .queryParam("units", "metric")
+                    .queryParam("appid", API_KEY)
+                    .toUriString();
+
+            OpenWeatherResponse res = restTemplate.getForObject(url, OpenWeatherResponse.class);
+            var current = res.current();
+
+            WeatherDailyForecast.HalfDayData morning = new WeatherDailyForecast.HalfDayData(
+                    current.temp(),
+                    current.humidity(),
+                    current.weather().get(0).main()
+            );
+
             List<WeatherDailyForecast> forecasts = forecastClient.getForecasts(lat, lon, today);
-            weekly.addAll(forecasts.subList(0, Math.min(5, forecasts.size())));
-        } else {
-            try {
-                String url = UriComponentsBuilder.fromHttpUrl("https://api.openweathermap.org/data/3.0/onecall")
-                        .queryParam("lat", lat)
-                        .queryParam("lon", lon)
-                        .queryParam("exclude", "minutely,hourly,daily,alerts")
-                        .queryParam("units", "metric")
-                        .queryParam("appid", API_KEY)
-                        .toUriString();
+            WeatherDailyForecast todayForecastFromForecast = forecasts.get(0);
+            WeatherDailyForecast.HalfDayData afternoon = todayForecastFromForecast.afternoon();
 
-                OpenWeatherResponse res = restTemplate.getForObject(url, OpenWeatherResponse.class);
-                var current = res.current();
+            WeatherDailyForecast todayForecast = new WeatherDailyForecast(
+                    today.toString(), morning, afternoon
+            );
 
-                WeatherDailyForecast.HalfDayData morning = new WeatherDailyForecast.HalfDayData(
-                        current.temp(),
-                        current.humidity(),
-                        current.weather().get(0).main()
-                );
-
-                List<WeatherDailyForecast> forecasts = forecastClient.getForecasts(lat, lon, today);
-                WeatherDailyForecast todayForecastFromForecast = forecasts.get(0);
-                WeatherDailyForecast.HalfDayData afternoon = todayForecastFromForecast.afternoon();
-
-                WeatherDailyForecast todayForecast = new WeatherDailyForecast(
-                        today.toString(), morning, afternoon
-                );
-
-                weekly.add(todayForecast);
-                weekly.addAll(forecasts.subList(1, Math.min(5, forecasts.size())));
-            } catch (HttpClientErrorException | ResourceAccessException e) {
-                throw new UnauthorizedException(EXTERNAL_SERVER_ERROR);
-            } catch (Exception e) {
-                throw new BadRequestException(INTERNAL_SEVER_ERROR);
-            }
+            weekly.add(todayForecast);
+            weekly.addAll(forecasts.subList(1, Math.min(5, forecasts.size())));
+        } catch (HttpClientErrorException | ResourceAccessException e) {
+            throw new UnauthorizedException(EXTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            throw new BadRequestException(INTERNAL_SEVER_ERROR);
         }
-
         return new WeatherWeeklyResponse(weekly);
     }
 }
